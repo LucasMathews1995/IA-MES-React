@@ -1,6 +1,13 @@
 import { NormaItem } from "../types/Norma";
 
 export class NormaService {
+
+
+
+
+
+
+
   private readonly baseUrl = "http://localhost:8080/api";
 
   async getNormas(categoria: string): Promise<NormaItem[]> {
@@ -34,6 +41,34 @@ export class NormaService {
       throw error;
     }
   }
+
+
+
+  async deletar(id: number| string, categoria: string): Promise<void> {
+  try {
+    const endpoint = categoria.toLowerCase();
+    const response = await fetch(`${this.baseUrl}/${endpoint}/${id}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to delete ${endpoint} with id ${id}`);
+    }
+
+    
+    if (response.status === 204) {
+      return;
+    }
+
+    const rawText = await response.text();
+    if (rawText) {
+      JSON.parse(rawText);
+    }
+  } catch (error: any) {
+    console.error("Erro no NormaService.deletar:", error);
+    throw error;
+  }
+}
 
   getCategorias(): string[] {
     return ["IOP", "TRAINING", "EXPLANATION"];
